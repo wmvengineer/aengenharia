@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Engenharia.com | Soluções Técnicas para Engenheiros e Arquitetos</title>
+  
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Fonte Inter & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f7ff',
+              500: '#0066cc',
+              600: '#0052a3',
+              900: '#0a2540',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Estilo de blueprint sutil para engenharia */
+    .bg-grid-pattern {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body class="bg-zinc-50 text-zinc-800 font-sans antialiased flex flex-col min-h-screen">
+
+  <!-- ================= TOPBAR & NAVBAR ================= -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-zinc-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 group">
+        <div class="w-9 h-9 bg-zinc-900 text-white flex items-center justify-center rounded-lg font-display font-bold text-lg group-hover:bg-brand-500 transition-colors">
+          A
+        </div>
+        <div class="flex flex-col">
+          <span class="font-display font-bold text-lg tracking-tight text-zinc-900">A Engenharia<span class="text-brand-500">.com</span></span>
+          <span class="text-[10px] text-zinc-500 -mt-1 tracking-wider uppercase font-medium">Arquitetura & Engenharia</span>
+        </div>
+      </a>
+
+      <!-- Navegação Principal -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-600">
+        <a href="#catalogo" class="hover:text-zinc-900 transition-colors">Produtos & Planilhas</a>
+        <a href="#sobre" class="hover:text-zinc-900 transition-colors">Sobre</a>
+        <a href="#estudantes" class="hover:text-zinc-900 transition-colors">Área Estudantil</a>
+      </nav>
+
+      <!-- Botões de Ação -->
+      <div class="flex items-center gap-3">
+        <!-- Botão Painel Admin -->
+        <button onclick="abrirAdminModal()" class="flex items-center gap-1.5 text-xs font-medium text-zinc-600 hover:text-zinc-900 px-3 py-1.5 border border-zinc-200 rounded-lg hover:bg-zinc-100 transition-all">
+          <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+          <span>Admin</span>
+        </button>
+
+        <!-- Carrinho -->
+        <button onclick="toggleCarrinho()" class="relative flex items-center gap-2 bg-zinc-900 text-white px-4 py-2 rounded-lg hover:bg-brand-500 transition-all text-sm font-medium">
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Carrinho</span>
+          <span id="carrinho-contador" class="bg-brand-500 text-white text-[11px] font-bold px-1.5 py-0.2 rounded-full hidden">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= HERO SECTION ================= -->
+  <section class="relative bg-white border-b border-zinc-200 py-16 lg:py-24 bg-grid-pattern overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-200 bg-zinc-50 text-xs font-medium text-zinc-600 mb-6">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Templates NBR, BIM e Planilhas Automatizadas
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-display font-bold tracking-tight text-zinc-950 leading-[1.15]">
+          Acelere seus projetos com precisão de cálculo e design.
+        </h1>
+        <p class="mt-5 text-lg text-zinc-600 leading-relaxed max-w-2xl font-light">
+          Ferramentas práticas desenvolvidas por e para engenheiros e arquitetos: planilhas paramétricas, blocos inteligentes, memoriais de cálculo e cursos práticos.
+        </p>
+
+        <!-- Barra de Busca Rápida -->
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 max-w-xl">
+          <div class="relative flex-1">
+            <i data-lucide="search" class="w-5 h-5 absolute left-3.5 top-3.5 text-zinc-400"></i>
+            <input 
+              type="text" 
+              id="buscaInput" 
+              placeholder="Buscar por 'Revit', 'Viga NBR 6118', 'Orçamento SINAPI'..."
+              oninput="filtrarProdutos()"
+              class="w-full pl-10 pr-4 py-3 bg-zinc-50 border border-zinc-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:bg-white text-sm"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CATÁLOGO / E-COMMERCE ================= -->
+  <main id="catalogo" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1 w-full">
+    
+    <!-- Filtros por Categoria -->
+    <div class="flex items-center justify-between flex-wrap gap-4 border-b border-zinc-200 pb-4 mb-8">
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 w-full sm:w-auto" id="lista-categorias">
+        <button onclick="filtrarCategoria('Todas')" class="btn-categoria active px-4 py-2 text-xs font-semibold rounded-full bg-zinc-900 text-white transition-all">Todas</button>
+        <button onclick="filtrarCategoria('Estruturas & Cálculo')" class="btn-categoria px-4 py-2 text-xs font-semibold rounded-full bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-all">Estruturas & Cálculo</button>
+        <button onclick="filtrarCategoria('Arquitetura & BIM')" class="btn-categoria px-4 py-2 text-xs font-semibold rounded-full bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-all">Arquitetura & BIM</button>
+        <button onclick="filtrarCategoria('Orçamentos & SINAPI')" class="btn-categoria px-4 py-2 text-xs font-semibold rounded-full bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-all">Orçamentos & SINAPI</button>
+        <button onclick="filtrarCategoria('Laudos & Perícias')" class="btn-categoria px-4 py-2 text-xs font-semibold rounded-full bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-all">Laudos & Perícias</button>
+      </div>
+      <div class="text-xs text-zinc-500 font-medium">
+        Mostrando <span id="total-produtos-exibidos" class="font-bold text-zinc-800">0</span> itens técnicos
+      </div>
+    </div>
+
+    <!-- Grid de Produtos -->
+    <div id="grid-produtos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- Inserido dinamicamente via JS -->
+    </div>
+
+    <!-- Feedback vazio -->
+    <div id="empty-state" class="hidden text-center py-16">
+      <i data-lucide="folder-search" class="w-12 h-12 mx-auto text-zinc-400 stroke-1 mb-3"></i>
+      <h3 class="text-base font-semibold text-zinc-800">Nenhum produto encontrado</h3>
+      <p class="text-sm text-zinc-500 mt-1">Tente ajustar seus termos de busca ou filtros.</p>
+    </div>
+  </main>
+
+  <!-- ================= MODAL CHECKOUT PIX PAGBANK (NOVO REQUISITO) ================= -->
+  <div id="modal-pix" class="fixed inset-0 bg-zinc-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-zinc-200 relative animate-in fade-in zoom-in-95">
+      <button onclick="fecharModalPix()" class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-700">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Passo 1: Cadastro Exigido pelo PagBank -->
+      <div id="pix-passo-dados" class="space-y-4">
+        <div class="text-center">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold mb-2">
+            <i data-lucide="zap" class="w-3.5 h-3.5"></i> Liberação Imediata
+          </div>
+          <h3 class="font-display font-bold text-lg text-zinc-950" id="pix-modal-titulo">Produto</h3>
+          <p class="text-xs text-zinc-500 mt-1">Dados necessários para emissão do PIX registrado no PagBank.</p>
+        </div>
+
+        <div class="bg-zinc-50 p-3 rounded-xl border border-zinc-200 flex justify-between items-center text-xs">
+          <span class="text-zinc-600 font-medium">Total a pagar:</span>
+          <span class="font-display font-bold text-zinc-950 text-base" id="pix-modal-preco">R$ 0,00</span>
+        </div>
+
+        <form onsubmit="solicitarPixPagBank(event)" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-medium text-zinc-700 mb-1">Nome Completo</label>
+            <input required type="text" id="pix-cliente-nome" placeholder="Seu nome" class="w-full border border-zinc-300 rounded-lg p-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900" />
+          </div>
+          <div>
+            <label class="block font-medium text-zinc-700 mb-1">E-mail</label>
+            <input required type="email" id="pix-cliente-email" placeholder="seu@email.com" class="w-full border border-zinc-300 rounded-lg p-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900" />
+          </div>
+          <div>
+            <label class="block font-medium text-zinc-700 mb-1">CPF (apenas números)</label>
+            <input required type="text" id="pix-cliente-cpf" placeholder="00000000000" maxlength="14" class="w-full border border-zinc-300 rounded-lg p-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900" />
+          </div>
+          <button type="submit" id="btn-submit-pix" class="w-full bg-zinc-900 hover:bg-brand-500 text-white font-semibold py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+            <i data-lucide="qr-code" class="w-4 h-4"></i> Gerar PIX PagBank
+          </button>
+        </form>
+      </div>
+
+      <!-- Passo 2: QR Code & Polling do Banco -->
+      <div id="pix-passo-qrcode" class="hidden space-y-4 text-center">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold">
+          <i data-lucide="clock" class="w-3.5 h-3.5 animate-spin"></i> Aguardando Pagamento...
+        </div>
+
+        <div class="p-2 bg-zinc-100 rounded-xl inline-block border border-zinc-200">
+          <img id="pix-img-qr" src="" alt="QR Code PagBank" class="w-44 h-44 mx-auto rounded-lg" />
+        </div>
+
+        <div class="text-left space-y-1">
+          <label class="text-[11px] font-semibold text-zinc-600">Código PIX Copia e Cola:</label>
+          <div class="flex items-center gap-2">
+            <input readonly id="pix-copiacola" class="text-xs bg-zinc-100 border border-zinc-300 rounded-lg p-2 w-full font-mono text-zinc-600" />
+            <button onclick="copiarCodigoPix()" class="bg-zinc-900 text-white px-3 py-2 rounded-lg text-xs font-semibold">Copiar</button>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t flex justify-between items-center text-[10px] text-zinc-400">
+          <span>Ouvindo compensação...</span>
+          <button onclick="simularPagamentoAprovado()" class="text-emerald-600 hover:underline font-bold">[Simular Aprovação]</button>
+        </div>
+      </div>
+
+      <!-- Passo 3: Pagamento Confirmado & Download Criptografado Único -->
+      <div id="pix-passo-sucesso" class="hidden space-y-4 text-center py-2">
+        <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+          <i data-lucide="check" class="w-6 h-6 stroke-[3]"></i>
+        </div>
+        <div>
+          <h3 class="font-display font-bold text-lg text-zinc-950">Pagamento Reconhecido!</h3>
+          <p class="text-xs text-zinc-500 mt-1">Seu link único de acesso seguro foi gerado com sucesso.</p>
+        </div>
+
+        <div class="bg-zinc-50 border border-zinc-200 p-3 rounded-xl text-left text-[11px] space-y-1">
+          <div class="flex justify-between font-bold text-zinc-700">
+            <span>Link Único e Criptografado</span>
+            <span class="text-emerald-600">Válido por 24 horas</span>
+          </div>
+          <p class="text-zinc-500 text-[10px]">Acesso exclusivo registrado. Links compartilhados são bloqueados pela chave de integridade.</p>
+        </div>
+
+        <button onclick="efetuarDownloadCriptografado()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 text-sm shadow">
+          <i data-lucide="download" class="w-4 h-4"></i> Baixar Arquivo Agora
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= SLIDE-OVER CARRINHO ================= -->
+  <div id="carrinho-overlay" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden transition-opacity" onclick="toggleCarrinho()"></div>
+  <aside id="carrinho-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="p-5 border-b border-zinc-200 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i data-lucide="shopping-bag" class="w-5 h-5 text-zinc-900"></i>
+        <h2 class="font-display font-bold text-lg text-zinc-900">Seu Carrinho</h2>
+      </div>
+      <button onclick="toggleCarrinho()" class="p-2 text-zinc-400 hover:text-zinc-700 rounded-lg hover:bg-zinc-100">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Itens do Carrinho -->
+    <div id="carrinho-itens" class="p-5 flex-1 overflow-y-auto space-y-4 divide-y divide-zinc-100"></div>
+
+    <!-- Footer Carrinho -->
+    <div class="p-5 border-t border-zinc-200 bg-zinc-50 space-y-4">
+      <div class="flex justify-between items-center text-sm">
+        <span class="text-zinc-600">Subtotal:</span>
+        <span id="carrinho-subtotal" class="font-display font-bold text-lg text-zinc-900">R$ 0,00</span>
+      </div>
+      <p class="text-xs text-zinc-500">Entrega digital imediata após confirmação PIX ou checkout.</p>
+      
+      <button onclick="finalizarPedidoWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm">
+        <i data-lucide="message-circle" class="w-5 h-5"></i>
+        <span>Finalizar Pedido via WhatsApp</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ================= MODAL ADMIN ================= -->
+  <div id="admin-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-zinc-200 overflow-hidden">
+      
+      <!-- Cabeçalho Admin -->
+      <div class="p-5 border-b border-zinc-200 flex items-center justify-between bg-zinc-900 text-white">
+        <div class="flex items-center gap-2">
+          <i data-lucide="sliders" class="w-5 h-5 text-brand-500"></i>
+          <h2 class="font-display font-bold text-lg">Painel Administrativo | A Engenharia.com</h2>
+        </div>
+        <button onclick="fecharAdminModal()" class="text-zinc-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Conteúdo com Autenticação -->
+      <div id="admin-auth" class="p-8 text-center max-w-sm mx-auto my-auto">
+        <i data-lucide="shield-check" class="w-12 h-12 text-zinc-400 mx-auto mb-3"></i>
+        <h3 class="font-bold text-zinc-900 text-lg">Acesso Restrito</h3>
+        <p class="text-xs text-zinc-500 mb-4">Digite o PIN administrativo para gerenciar o catálogo.</p>
+        <input type="password" id="admin-pin" placeholder="Senha padrão: admin123" class="w-full text-center border border-zinc-300 rounded-lg p-2.5 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900" />
+        <button onclick="autenticarAdmin()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-white font-medium py-2 rounded-lg text-sm transition-colors">Acessar Painel</button>
+      </div>
+
+      <!-- Dashboard Gerenciável -->
+      <div id="admin-dashboard" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
+        
+        <!-- Configuração da URL do Cloudflare Worker -->
+        <div class="bg-zinc-100 p-4 rounded-xl border border-zinc-200 space-y-2 text-xs">
+          <span class="font-bold text-zinc-900 flex items-center gap-1.5">
+            <i data-lucide="server" class="w-3.5 h-3.5 text-brand-500"></i> Integração Cloudflare Worker (PagBank)
+          </span>
+          <input type="url" id="cfg-worker-url" placeholder="https://aengenharia-pagbank-api.seu-usuario.workers.dev" class="w-full border border-zinc-300 rounded-lg p-2 bg-white" />
+          <p class="text-[11px] text-zinc-500">Cole aqui o link do seu Worker criado na Cloudflare para processar os pagamentos reais.</p>
+        </div>
+
+        <!-- Formulário Adicionar/Editar Produto -->
+        <div class="bg-zinc-50 p-5 rounded-xl border border-zinc-200">
+          <h4 id="form-title" class="font-display font-bold text-sm text-zinc-900 mb-4 flex items-center gap-2">
+            <i data-lucide="plus-circle" class="w-4 h-4 text-brand-500"></i> Cadastrar Novo Produto
+          </h4>
+          <form id="produto-form" onsubmit="salvarProduto(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <input type="hidden" id="prod-id" />
+            
+            <div class="sm:col-span-2">
+              <label class="block font-medium text-zinc-700 mb-1">Título do Produto</label>
+              <input required type="text" id="prod-titulo" placeholder="Ex: Planilha de Dimensionamento NBR 6118" class="w-full border border-zinc-300 rounded-lg p-2 focus:bg-white" />
+            </div>
+
+            <div>
+              <label class="block font-medium text-zinc-700 mb-1">Categoria</label>
+              <select id="prod-categoria" class="w-full border border-zinc-300 rounded-lg p-2 bg-white">
+                <option>Estruturas & Cálculo</option>
+                <option>Arquitetura & BIM</option>
+                <option>Orçamentos & SINAPI</option>
+                <option>Laudos & Perícias</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-medium text-zinc-700 mb-1">Preço (R$)</label>
+              <input required type="number" step="0.01" id="prod-preco" placeholder="Ex: 89.90" class="w-full border border-zinc-300 rounded-lg p-2 focus:bg-white" />
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block font-medium text-zinc-700 mb-1">URL da Imagem</label>
+              <input required type="url" id="prod-imagem" placeholder="https://images.unsplash.com/..." class="w-full border border-zinc-300 rounded-lg p-2 focus:bg-white" />
+            </div>
+
+            <!-- CHAVE SELETORA: DOWNLOAD IMEDIATO OU URL EXTERNA -->
+            <div class="sm:col-span-2 p-3 bg-white border border-zinc-200 rounded-xl space-y-2">
+              <label class="block font-bold text-zinc-900 text-xs">Chave de Entrega / Comportamento:</label>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-zinc-50 text-xs font-semibold">
+                  <input type="radio" name="prod-tipo" value="download" checked onchange="alternarCamposAdmin()" />
+                  <span>Download Imediato (PIX PagBank)</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-zinc-50 text-xs font-semibold">
+                  <input type="radio" name="prod-tipo" value="externo" onchange="alternarCamposAdmin()" />
+                  <span>URL Externa (Checkout/Plataforma)</span>
+                </label>
+              </div>
+
+              <!-- Campo se for Download Imediato -->
+              <div id="campo-download" class="mt-2 space-y-1">
+                <label class="block text-[11px] font-medium text-zinc-600">Link Protegido do Arquivo (Google Drive, Cloudflare R2 ou S3):</label>
+                <input type="url" id="prod-arquivo-url" placeholder="https://meu-storage.com/arquivos/vigas.zip" class="w-full border border-zinc-300 rounded-lg p-2 bg-zinc-50" />
+                <p class="text-[10px] text-zinc-400">O cliente só terá acesso a este link após compensação confirmada do PIX.</p>
+              </div>
+
+              <!-- Campo se for URL Externa -->
+              <div id="campo-externo" class="mt-2 hidden space-y-1">
+                <label class="block text-[11px] font-medium text-zinc-600">URL Externa de Destino (Kiwify, Hotmart, Eduzz, etc):</label>
+                <input type="url" id="prod-url-externa" placeholder="https://pay.kiwify.com.br/..." class="w-full border border-zinc-300 rounded-lg p-2 bg-zinc-50" />
+              </div>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block font-medium text-zinc-700 mb-1">Descrição Técnica Resumida</label>
+              <textarea required id="prod-descricao" rows="2" placeholder="Resumo dos módulos, normas atendidas..." class="w-full border border-zinc-300 rounded-lg p-2 focus:bg-white"></textarea>
+            </div>
+
+            <div class="sm:col-span-2 flex justify-end gap-2 mt-2">
+              <button type="button" onclick="cancelarEdicao()" class="px-4 py-2 border border-zinc-300 rounded-lg text-zinc-600 hover:bg-zinc-100">Cancelar</button>
+              <button type="submit" class="px-5 py-2 bg-zinc-900 text-white rounded-lg hover:bg-brand-500 font-semibold transition-colors">Salvar Produto</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Tabela de Produtos Cadastrados -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="font-display font-bold text-sm text-zinc-900">Catálogo Atual (<span id="admin-total-itens">0</span> itens)</h4>
+            <button onclick="exportarDadosJSON()" class="text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-800 px-3 py-1.5 rounded-lg border border-zinc-300 flex items-center gap-1.5 font-medium">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i> Exportar `products.json`
+            </button>
+          </div>
+          <div class="border border-zinc-200 rounded-xl overflow-hidden">
+            <table class="w-full text-left text-xs text-zinc-600">
+              <thead class="bg-zinc-100 font-semibold text-zinc-800 border-b border-zinc-200">
+                <tr>
+                  <th class="p-3">Item</th>
+                  <th class="p-3">Tipo</th>
+                  <th class="p-3">Preço</th>
+                  <th class="p-3 text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="admin-tabela-produtos" class="divide-y divide-zinc-200"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-white border-t border-zinc-200 py-10 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+      <div class="flex items-center gap-2">
+        <span class="font-display font-bold text-zinc-900">A Engenharia.com</span>
+        <span>— Plataforma digital para profissionais da construção</span>
+      </div>
+      <div>
+        Hospedado no <span class="font-semibold text-zinc-800">GitHub Pages</span> | 100% Estático & Otimizado
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= JAVASCRIPT DINÂMICO ================= -->
+  <script>
+    // 1. Dados Iniciais
+    const PRODUTOS_PADRAO = [
+      {
+        id: "1",
+        titulo: "Planilha Automatizada de Vigas e Pilares (NBR 6118)",
+        categoria: "Estruturas & Cálculo",
+        preco: 89.90,
+        tipo: "download", // 'download' = PagBank PIX Imediato | 'externo' = Link externo
+        arquivoUrl: "https://raw.githubusercontent.com/example/demo/main/vigas-v1.zip",
+        urlExterna: "",
+        imagem: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80",
+        descricao: "Cálculo de armaduras longitudinais e transversais com memória de cálculo em PDF instantânea."
+      },
+      {
+        id: "2",
+        titulo: "Template BIM Revit Arquitetura & Compatibilização",
+        categoria: "Arquitetura & BIM",
+        preco: 149.90,
+        tipo: "download",
+        arquivoUrl: "https://raw.githubusercontent.com/example/demo/main/revit-template.zip",
+        urlExterna: "",
+        imagem: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
+        descricao: "Paredes compostas, tabelas quantitativas automáticas e pranchas configuradas nos padrões ABNT."
+      },
+      {
+        id: "3",
+        titulo: "Curso Master BIM & Compatibilização de Projetos",
+        categoria: "Arquitetura & BIM",
+        preco: 197.00,
+        tipo: "externo",
+        arquivoUrl: "",
+        urlExterna: "https://hotmart.com",
+        imagem: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=600&q=80",
+        descricao: "Acesso à área de membros exclusiva com suporte e atualizações."
+      }
+    ];
+
+    let produtos = JSON.parse(localStorage.getItem('aengenharia_produtos')) || PRODUTOS_PADRAO;
+    let carrinho = JSON.parse(localStorage.getItem('aengenharia_carrinho')) || [];
+    let workerUrl = localStorage.getItem('aeng_worker_url') || "";
+    let categoriaAtiva = 'Todas';
+
+    let produtoSelecionadoPix = null;
+    let pollingPixTimer = null;
+    let tokenCriptografadoAtivo = null;
+
+    function sincronizarStorage() {
+      localStorage.setItem('aengenharia_produtos', JSON.stringify(produtos));
+      localStorage.setItem('aengenharia_carrinho', JSON.stringify(carrinho));
+    }
+
+    const formatarPreco = (valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    // Renderização do Catálogo (mantendo seu layout original)
+    function renderizarCatalogo() {
+      const grid = document.getElementById('grid-produtos');
+      const termoBusca = document.getElementById('buscaInput').value.toLowerCase();
+      const emptyState = document.getElementById('empty-state');
+
+      const filtrados = produtos.filter(p => {
+        const correspondeCategoria = categoriaAtiva === 'Todas' || p.categoria === categoriaAtiva;
+        const correspondeBusca = p.titulo.toLowerCase().includes(termoBusca) || p.descricao.toLowerCase().includes(termoBusca);
+        return correspondeCategoria && correspondeBusca;
+      });
+
+      document.getElementById('total-produtos-exibidos').innerText = filtrados.length;
+      grid.innerHTML = '';
+
+      if (filtrados.length === 0) {
+        emptyState.classList.remove('hidden');
+      } else {
+        emptyState.classList.add('hidden');
+        filtrados.forEach(prod => {
+          const ehDownload = prod.tipo === 'download';
+          const card = document.createElement('div');
+          card.className = "group bg-white rounded-2xl border border-zinc-200 overflow-hidden flex flex-col hover:border-zinc-400 hover:shadow-lg transition-all duration-200";
+          card.innerHTML = `
+            <div class="h-44 w-full bg-zinc-100 overflow-hidden relative">
+              <img src="${prod.imagem}" alt="${prod.titulo}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=600&q=80'"/>
+              <span class="absolute top-3 left-3 bg-zinc-900/80 backdrop-blur-md text-white text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded">
+                ${prod.categoria}
+              </span>
+              <span class="absolute bottom-3 right-3 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${ehDownload ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-100'}">
+                ${ehDownload ? '⚡ Download Imediato' : '🔗 Link Externo'}
+              </span>
+            </div>
+            <div class="p-5 flex flex-col flex-1">
+              <h3 class="font-display font-bold text-base text-zinc-900 line-clamp-1 group-hover:text-brand-500 transition-colors">${prod.titulo}</h3>
+              <p class="text-xs text-zinc-500 mt-2 line-clamp-2 leading-relaxed">${prod.descricao}</p>
+              
+              <div class="mt-auto pt-4 flex items-center justify-between border-t border-zinc-100">
+                <div>
+                  <span class="text-[10px] text-zinc-400 block font-medium uppercase">Valor</span>
+                  <span class="font-display font-bold text-zinc-950 text-base">${formatarPreco(prod.preco)}</span>
+                </div>
+                
+                <div class="flex items-center gap-1.5">
+                  ${ehDownload ? `
+                    <button onclick="iniciarCheckoutPix('${prod.id}')" title="Comprar via PIX com Download Imediato" class="bg-zinc-900 hover:bg-brand-500 text-white text-xs font-semibold px-3 py-2 rounded-xl transition-all flex items-center gap-1">
+                      <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i> PIX
+                    </button>
+                    <button onclick="adicionarAoCarrinho('${prod.id}')" title="Adicionar ao Carrinho" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-800 p-2 rounded-xl transition-all">
+                      <i data-lucide="plus" class="w-4 h-4"></i>
+                    </button>
+                  ` : `
+                    <a href="${prod.urlExterna}" target="_blank" rel="noopener noreferrer" class="bg-zinc-900 hover:bg-brand-500 text-white text-xs font-semibold px-3 py-2 rounded-xl transition-all flex items-center gap-1">
+                      <span>Acessar</span> <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    </a>
+                  `}
+                </div>
+              </div>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+      lucide.createIcons();
+    }
+
+    function filtrarCategoria(cat) {
+      categoriaAtiva = cat;
+      document.querySelectorAll('.btn-categoria').forEach(btn => {
+        if (btn.innerText === cat) {
+          btn.className = "btn-categoria active px-4 py-2 text-xs font-semibold rounded-full bg-zinc-900 text-white transition-all";
+        } else {
+          btn.className = "btn-categoria px-4 py-2 text-xs font-semibold rounded-full bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-all";
+        }
+      });
+      renderizarCatalogo();
+    }
+
+    function filtrarProdutos() {
+      renderizarCatalogo();
+    }
+
+    // ================= FLUXO PAGBANK PIX ================= //
+    function iniciarCheckoutPix(id) {
+      produtoSelecionadoPix = produtos.find(p => p.id === id);
+      if (!produtoSelecionadoPix) return;
+
+      document.getElementById('pix-modal-titulo').innerText = produtoSelecionadoPix.titulo;
+      document.getElementById('pix-modal-preco').innerText = formatarPreco(produtoSelecionadoPix.preco);
+
+      document.getElementById('pix-passo-dados').classList.remove('hidden');
+      document.getElementById('pix-passo-qrcode').classList.add('hidden');
+      document.getElementById('pix-passo-sucesso').classList.add('hidden');
+      document.getElementById('modal-pix').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function fecharModalPix() {
+      document.getElementById('modal-pix').classList.add('hidden');
+      if (pollingPixTimer) clearInterval(pollingPixTimer);
+    }
+
+    async function solicitarPixPagBank(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-submit-pix');
+      btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Gerando PIX...`;
+      lucide.createIcons();
+
+      const cliente = {
+        nome: document.getElementById('pix-cliente-nome').value,
+        email: document.getElementById('pix-cliente-email').value,
+        cpf: document.getElementById('pix-cliente-cpf').value
+      };
+
+      try {
+        let dadosPix;
+
+        if (workerUrl) {
+          const res = await fetch(`${workerUrl}/api/criar-pix`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              produtoId: produtoSelecionadoPix.id,
+              titulo: produtoSelecionadoPix.titulo,
+              preco: produtoSelecionadoPix.preco,
+              cliente,
+              arquivoUrl: produtoSelecionadoPix.arquivoUrl
+            })
+          });
+          dadosPix = await res.json();
+          if (!res.ok) throw new Error(JSON.stringify(dadosPix));
+        } else {
+          // Fallback / Demonstração se ainda não configurou o Worker
+          dadosPix = {
+            orderId: `PAGBANK_DEMO_${Date.now()}`,
+            copiaECola: `00020126580014BR.GOV.BCB.PIX0136PAGBANKDEMO123520400005303986540${produtoSelecionadoPix.preco.toFixed(2)}5802BR5916A ENGENHARIA COM6009SAO PAULO`,
+            qrCodeImg: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PagBankDemo`
+          };
+        }
+
+        document.getElementById('pix-img-qr').src = dadosPix.qrCodeImg || `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(dadosPix.copiaECola)}`;
+        document.getElementById('pix-copiacola').value = dadosPix.copiaECola;
+
+        document.getElementById('pix-passo-dados').classList.add('hidden');
+        document.getElementById('pix-passo-qrcode').classList.remove('hidden');
+
+        // Inicia escuta automática do PagBank
+        iniciarEscutaCompensacao(dadosPix.orderId, produtoSelecionadoPix.arquivoUrl);
+
+      } catch (err) {
+        alert("Erro ao conectar com PagBank: " + err.message);
+      } finally {
+        btn.innerHTML = `<i data-lucide="qr-code" class="w-4 h-4"></i> Gerar PIX PagBank`;
+        lucide.createIcons();
+      }
+    }
+
+    function iniciarEscutaCompensacao(orderId, arquivoUrl) {
+      if (pollingPixTimer) clearInterval(pollingPixTimer);
+      pollingPixTimer = setInterval(async () => {
+        if (!workerUrl) return;
+
+        try {
+          const res = await fetch(`${workerUrl}/api/verificar-pix?orderId=${orderId}&arquivoUrl=${encodeURIComponent(arquivoUrl)}`);
+          const data = await res.json();
+
+          if (data.status === "PAID") {
+            clearInterval(pollingPixTimer);
+            liberarDownloadSucesso(data.downloadToken);
+          }
+        } catch (e) {
+          console.error("Polling PagBank:", e);
+        }
+      }, 3000);
+    }
+
+    function simularPagamentoAprovado() {
+      if (pollingPixTimer) clearInterval(pollingPixTimer);
+      // Gera token temporário assinado simulado
+      const tokenDemo = btoa(JSON.stringify({ exp: Date.now() + 86400000, urlOriginal: produtoSelecionadoPix.arquivoUrl }));
+      liberarDownloadSucesso(tokenDemo);
+    }
+
+    function liberarDownloadSucesso(token) {
+      tokenCriptografadoAtivo = token;
+      document.getElementById('pix-passo-qrcode').classList.add('hidden');
+      document.getElementById('pix-passo-sucesso').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function efetuarDownloadCriptografado() {
+      if (!tokenCriptografadoAtivo) return alert("Acesso inválido.");
+      try {
+        const dados = JSON.parse(atob(tokenCriptografadoAtivo));
+        if (Date.now() > dados.exp) return alert("Link de download expirado.");
+
+        const a = document.createElement('a');
+        a.href = dados.urlOriginal;
+        a.download = `${produtoSelecionadoPix.titulo.replace(/\s+/g, '_')}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } catch (e) {
+        alert("Falha na validação do token criptográfico.");
+      }
+    }
+
+    function copiarCodigoPix() {
+      const el = document.getElementById('pix-copiacola');
+      navigator.clipboard.writeText(el.value);
+      alert("Código PIX copiado com sucesso!");
+    }
+
+    // ================= CARRINHO ================= //
+    function toggleCarrinho() {
+      const drawer = document.getElementById('carrinho-drawer');
+      const overlay = document.getElementById('carrinho-overlay');
+      const estaFechado = drawer.classList.contains('translate-x-full');
+      
+      if (estaFechado) {
+        drawer.classList.remove('translate-x-full');
+        overlay.classList.remove('hidden');
+      } else {
+        drawer.classList.add('translate-x-full');
+        overlay.classList.add('hidden');
+      }
+    }
+
+    function adicionarAoCarrinho(id) {
+      const produto = produtos.find(p => p.id === id);
+      const itemExistente = carrinho.find(item => item.id === id);
+
+      if (itemExistente) {
+        itemExistente.qtd += 1;
+      } else {
+        carrinho.push({ ...produto, qtd: 1 });
+      }
+      sincronizarStorage();
+      atualizarCarrinhoUI();
+      toggleCarrinho();
+    }
+
+    function removerDoCarrinho(id) {
+      carrinho = carrinho.filter(i => i.id !== id);
+      sincronizarStorage();
+      atualizarCarrinhoUI();
+    }
+
+    function atualizarCarrinhoUI() {
+      const container = document.getElementById('carrinho-itens');
+      const contador = document.getElementById('carrinho-contador');
+      const subtotalEl = document.getElementById('carrinho-subtotal');
+      
+      container.innerHTML = '';
+      const totalItens = carrinho.reduce((acc, curr) => acc + curr.qtd, 0);
+      const subtotal = carrinho.reduce((acc, curr) => acc + (curr.preco * curr.qtd), 0);
+
+      contador.innerText = totalItens;
+      contador.classList.toggle('hidden', totalItens === 0);
+      subtotalEl.innerText = formatarPreco(subtotal);
+
+      if (carrinho.length === 0) {
+        container.innerHTML = `<div class="text-center py-10 text-zinc-400 text-xs">O carrinho está vazio.</div>`;
+        return;
+      }
+
+      carrinho.forEach(item => {
+        const div = document.createElement('div');
+        div.className = "flex items-center gap-3 pt-3";
+        div.innerHTML = `
+          <img src="${item.imagem}" class="w-12 h-12 object-cover rounded-lg border border-zinc-200" />
+          <div class="flex-1 min-w-0">
+            <h5 class="text-xs font-bold text-zinc-900 truncate">${item.titulo}</h5>
+            <p class="text-[11px] text-zinc-500">${item.qtd}x ${formatarPreco(item.preco)}</p>
+          </div>
+          <button onclick="removerDoCarrinho('${item.id}')" class="text-zinc-400 hover:text-rose-500 p-1">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        `;
+        container.appendChild(div);
+      });
+      lucide.createIcons();
+    }
+
+    function finalizarPedidoWhatsApp() {
+      if (carrinho.length === 0) return alert("Adicione ao menos um item ao carrinho!");
+      const numeroWhatsapp = "5511999999999";
+      let msg = `*Novo Pedido - A Engenharia.com*\n\n`;
+      carrinho.forEach(item => {
+        msg += `• ${item.qtd}x ${item.titulo} - ${formatarPreco(item.preco * item.qtd)}\n`;
+      });
+      const subtotal = carrinho.reduce((acc, curr) => acc + (curr.preco * curr.qtd), 0);
+      msg += `\n*Total:* ${formatarPreco(subtotal)}\n`;
+      window.open(`https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    // ================= PAINEL ADMINISTRATIVO ================= //
+    function abrirAdminModal() { document.getElementById('admin-modal').classList.remove('hidden'); }
+    function fecharAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
+
+    function autenticarAdmin() {
+      if (document.getElementById('admin-pin').value === "admin123") {
+        document.getElementById('admin-auth').classList.add('hidden');
+        document.getElementById('admin-dashboard').classList.remove('hidden');
+        document.getElementById('cfg-worker-url').value = workerUrl;
+        carregarTabelaAdmin();
+      } else {
+        alert("PIN Incorreto!");
+      }
+    }
+
+    function alternarCamposAdmin() {
+      const tipo = document.querySelector('input[name="prod-tipo"]:checked').value;
+      document.getElementById('campo-download').classList.toggle('hidden', tipo !== 'download');
+      document.getElementById('campo-externo').classList.toggle('hidden', tipo !== 'externo');
+    }
+
+    function carregarTabelaAdmin() {
+      const tbody = document.getElementById('admin-tabela-produtos');
+      document.getElementById('admin-total-itens').innerText = produtos.length;
+      tbody.innerHTML = '';
+
+      produtos.forEach(prod => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-zinc-50";
+        tr.innerHTML = `
+          <td class="p-3 font-medium text-zinc-900 flex items-center gap-2">
+            <img src="${prod.imagem}" class="w-7 h-7 object-cover rounded" />
+            <span class="truncate max-w-[180px]">${prod.titulo}</span>
+          </td>
+          <td class="p-3">
+            <span class="text-[10px] px-1.5 py-0.5 rounded font-bold ${prod.tipo === 'download' ? 'bg-emerald-100 text-emerald-800' : 'bg-zinc-200 text-zinc-800'}">
+              ${prod.tipo === 'download' ? 'Download PIX' : 'Link Externo'}
+            </span>
+          </td>
+          <td class="p-3 font-bold">${formatarPreco(prod.preco)}</td>
+          <td class="p-3 text-right space-x-1">
+            <button onclick="prepararEdicao('${prod.id}')" class="text-zinc-600 hover:text-zinc-900 p-1">
+              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+            </button>
+            <button onclick="excluirProduto('${prod.id}')" class="text-rose-500 hover:text-rose-700 p-1">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons();
+    }
+
+    function salvarProduto(e) {
+      e.preventDefault();
+      
+      // Salva URL do Worker se configurada
+      workerUrl = document.getElementById('cfg-worker-url').value.trim();
+      localStorage.setItem('aeng_worker_url', workerUrl);
+
+      const id = document.getElementById('prod-id').value;
+      const tipo = document.querySelector('input[name="prod-tipo"]:checked').value;
+
+      const novoProduto = {
+        id: id ? id : Date.now().toString(),
+        titulo: document.getElementById('prod-titulo').value,
+        categoria: document.getElementById('prod-categoria').value,
+        preco: parseFloat(document.getElementById('prod-preco').value),
+        imagem: document.getElementById('prod-imagem').value,
+        tipo: tipo,
+        arquivoUrl: tipo === 'download' ? document.getElementById('prod-arquivo-url').value : '',
+        urlExterna: tipo === 'externo' ? document.getElementById('prod-url-externa').value : '',
+        descricao: document.getElementById('prod-descricao').value,
+      };
+
+      if (id) {
+        produtos = produtos.map(p => p.id === id ? novoProduto : p);
+      } else {
+        produtos.unshift(novoProduto);
+      }
+
+      sincronizarStorage();
+      renderizarCatalogo();
+      carregarTabelaAdmin();
+      cancelarEdicao();
+    }
+
+    function prepararEdicao(id) {
+      const prod = produtos.find(p => p.id === id);
+      if (!prod) return;
+      document.getElementById('prod-id').value = prod.id;
+      document.getElementById('prod-titulo').value = prod.titulo;
+      document.getElementById('prod-categoria').value = prod.categoria;
+      document.getElementById('prod-preco').value = prod.preco;
+      document.getElementById('prod-imagem').value = prod.imagem;
+      document.getElementById('prod-descricao').value = prod.descricao;
+
+      const radioDownload = document.querySelector('input[name="prod-tipo"][value="download"]');
+      const radioExterno = document.querySelector('input[name="prod-tipo"][value="externo"]');
+      
+      if (prod.tipo === 'externo') {
+        radioExterno.checked = true;
+        document.getElementById('prod-url-externa').value = prod.urlExterna || '';
+      } else {
+        radioDownload.checked = true;
+        document.getElementById('prod-arquivo-url').value = prod.arquivoUrl || '';
+      }
+      alternarCamposAdmin();
+
+      document.getElementById('form-title').innerText = "Editar Produto";
+    }
+
+    function cancelarEdicao() {
+      document.getElementById('produto-form').reset();
+      document.getElementById('prod-id').value = '';
+      document.getElementById('form-title').innerText = "Cadastrar Novo Produto";
+      alternarCamposAdmin();
+    }
+
+    function excluirProduto(id) {
+      if (confirm("Deseja realmente remover este produto do catálogo?")) {
+        produtos = produtos.filter(p => p.id !== id);
+        sincronizarStorage();
+        renderizarCatalogo();
+        carregarTabelaAdmin();
+      }
+    }
+
+    function exportarDadosJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(produtos, null, 2));
+      const a = document.createElement('a');
+      a.setAttribute("href", dataStr);
+      a.setAttribute("download", "products.json");
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderizarCatalogo();
+      atualizarCarrinhoUI();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
