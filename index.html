@@ -490,12 +490,19 @@
       }
     ];
 
+    // 1. Cole aqui a URL real do seu Worker (ela valerá para celulares e PCs automaticamente):
+    const WORKER_URL_OFICIAL = "https://aengenharia-pag.engenheirowmv.workers.dev";
+    let workerUrl = WORKER_URL_OFICIAL;
+
+    // 2. Força o celular a apagar a memória antiga e carregar o mesmo catálogo do desktop:
+    const VERSAO_CATALOGO = "v2.0"; 
+    if (localStorage.getItem('aeng_catalogo_versao') !== VERSAO_CATALOGO) {
+      localStorage.removeItem('aengenharia_produtos');
+      localStorage.setItem('aeng_catalogo_versao', VERSAO_CATALOGO);
+    }
+
     let produtos = JSON.parse(localStorage.getItem('aengenharia_produtos')) || PRODUTOS_PADRAO;
     let carrinho = JSON.parse(localStorage.getItem('aengenharia_carrinho')) || [];
-    
-    // URL padrão do Worker para funcionar em celulares e computadores sem travar:
-    const WORKER_PADRAO = "COLE_AQUI_A_URL_DO_SEU_WORKER"; 
-    let workerUrl = localStorage.getItem('aeng_worker_url') || WORKER_PADRAO;
     let categoriaAtiva = 'Todas';
 
     let produtoSelecionadoPix = null;
@@ -594,13 +601,6 @@
       if (e) e.preventDefault();
       const pin = document.getElementById('admin-pin').value;
       if (!pin) return alert("Digite a senha!");
-
-      if (!workerUrl || workerUrl.includes("COLE_AQUI")) {
-        const urlDigitada = prompt("Informe a URL do seu Cloudflare Worker para este dispositivo:", "https://");
-        if (!urlDigitada) return;
-        workerUrl = urlDigitada.trim();
-        localStorage.setItem('aeng_worker_url', workerUrl);
-      } // <- Chave que faltava restaurada aqui!
 
       const btn = document.getElementById('btn-login-admin');
       const originalText = btn.innerHTML;
