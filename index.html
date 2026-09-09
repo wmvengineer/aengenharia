@@ -316,7 +316,7 @@
         </button>
       </div>
 
-      <!-- TELA DE AUTENTICAÇÃO VIA NUVEM (SEM SENHA NO CÓDIGO) -->
+      <!-- TELA DE AUTENTICAÇÃO VIA NUVEM -->
       <div id="admin-auth" class="p-8 text-center max-w-sm mx-auto my-auto">
         <i data-lucide="key-round" class="w-12 h-12 text-zinc-400 mx-auto mb-3"></i>
         <h3 class="font-bold text-zinc-900 text-lg">Acesso Restrito</h3>
@@ -470,6 +470,7 @@
         categoria: "Estruturas & Cálculo",
         preco: 89.90,
         tipo: "download",
+        ativo: true,
         arquivoUrl: "https://raw.githubusercontent.com/example/demo/main/vigas-v1.zip",
         urlExterna: "",
         imagem: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80",
@@ -481,6 +482,7 @@
         categoria: "Arquitetura & BIM",
         preco: 197.00,
         tipo: "externo",
+        ativo: true,
         arquivoUrl: "",
         urlExterna: "https://hotmart.com",
         imagem: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=600&q=80",
@@ -512,7 +514,7 @@
       const termoBusca = document.getElementById('buscaInput').value.toLowerCase();
       const emptyState = document.getElementById('empty-state');
 
-     const filtrados = produtos.filter(p => {
+      const filtrados = produtos.filter(p => {
         const estaAtivo = p.ativo !== false; // Oculta produtos inativos para os clientes
         const correspondeCategoria = categoriaAtiva === 'Todas' || p.categoria === categoriaAtiva;
         const correspondeBusca = p.titulo.toLowerCase().includes(termoBusca) || p.descricao.toLowerCase().includes(termoBusca);
@@ -598,6 +600,7 @@
         if (!urlDigitada) return;
         workerUrl = urlDigitada.trim();
         localStorage.setItem('aeng_worker_url', workerUrl);
+      } // <- Chave que faltava restaurada aqui!
 
       const btn = document.getElementById('btn-login-admin');
       const originalText = btn.innerHTML;
@@ -631,8 +634,13 @@
       }
     }
 
-    function abrirAdminModal() { document.getElementById('admin-modal').classList.remove('hidden'); }
-    function fecharAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
+    function abrirAdminModal() { 
+      document.getElementById('admin-modal').classList.remove('hidden'); 
+    }
+    
+    function fecharAdminModal() { 
+      document.getElementById('admin-modal').classList.add('hidden'); 
+    }
 
     // ================= FLUXO PIX ================= //
     function iniciarCheckoutPix(id) {
@@ -657,9 +665,11 @@
     async function solicitarPixPagBank(e) {
       e.preventDefault();
 
-      if (!workerUrl) {
-        alert("ERRO DE CONFIGURAÇÃO:\n\nA URL do Cloudflare Worker não está configurada no painel Admin.");
-        return;
+      if (!workerUrl || workerUrl.includes("COLE_AQUI")) {
+        const urlDigitada = prompt("Informe a URL do seu Cloudflare Worker para este dispositivo:", "https://");
+        if (!urlDigitada) return;
+        workerUrl = urlDigitada.trim();
+        localStorage.setItem('aeng_worker_url', workerUrl);
       }
 
       const btn = document.getElementById('btn-submit-pix');
