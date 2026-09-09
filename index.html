@@ -36,22 +36,64 @@
   </script>
 
   <style>
-    /* Estilo de blueprint sutil para engenharia */
     .bg-grid-pattern {
       background-size: 32px 32px;
       background-image: 
         linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
     }
+    /* Desativa seleção de texto para dificultar cópia não autorizada */
+    .no-select {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
   </style>
-</head>
-<body class="bg-zinc-50 text-zinc-800 font-sans antialiased flex flex-col min-h-screen">
 
-  <!-- ================= TOPBAR & NAVBAR ================= -->
+  <!-- ================= ESCUDO ANTI-INSPEÇÃO (F12, BOTÃO DIREITO, CTRL+U) ================= -->
+  <script>
+    // 1. Bloqueia clique com botão direito
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+
+    // 2. Bloqueia teclas de atalho de desenvolvedor
+    document.addEventListener('keydown', (e) => {
+      // F12
+      if (e.key === 'F12' || e.keyCode === 123) {
+        e.preventDefault();
+        return false;
+      }
+      // Ctrl+Shift+I (Inspecionar), Ctrl+Shift+J (Console), Ctrl+Shift+C (Elemento)
+      if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+        e.preventDefault();
+        return false;
+      }
+      // Ctrl+U (Ver Código Fonte)
+      if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+        e.preventDefault();
+        return false;
+      }
+      // Ctrl+S (Salvar Página)
+      if (e.ctrlKey && (e.key === 'S' || e.key === 's')) {
+        e.preventDefault();
+        return false;
+      }
+    });
+
+    // 3. Limpa o console periodicamente
+    setInterval(() => {
+      console.clear();
+    }, 2000);
+  </script>
+</head>
+<body class="bg-zinc-50 text-zinc-800 font-sans antialiased flex flex-col min-h-screen no-select">
+
+  <!-- ================= HEADER ================= -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-zinc-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       
-      <!-- Logo -->
       <a href="#" class="flex items-center gap-2 group">
         <div class="w-9 h-9 bg-zinc-900 text-white flex items-center justify-center rounded-lg font-display font-bold text-lg group-hover:bg-brand-500 transition-colors">
           A
@@ -62,22 +104,18 @@
         </div>
       </a>
 
-      <!-- Navegação Principal -->
       <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-600">
         <a href="#catalogo" class="hover:text-zinc-900 transition-colors">Produtos & Planilhas</a>
         <a href="#sobre" class="hover:text-zinc-900 transition-colors">Sobre</a>
         <a href="#estudantes" class="hover:text-zinc-900 transition-colors">Área Estudantil</a>
       </nav>
 
-      <!-- Botões de Ação -->
       <div class="flex items-center gap-3">
-        <!-- Botão Painel Admin -->
         <button onclick="abrirAdminModal()" class="flex items-center gap-1.5 text-xs font-medium text-zinc-600 hover:text-zinc-900 px-3 py-1.5 border border-zinc-200 rounded-lg hover:bg-zinc-100 transition-all">
           <i data-lucide="lock" class="w-3.5 h-3.5"></i>
           <span>Admin</span>
         </button>
 
-        <!-- Carrinho -->
         <button onclick="toggleCarrinho()" class="relative flex items-center gap-2 bg-zinc-900 text-white px-4 py-2 rounded-lg hover:bg-brand-500 transition-all text-sm font-medium">
           <i data-lucide="shopping-bag" class="w-4 h-4"></i>
           <span class="hidden sm:inline">Carrinho</span>
@@ -87,7 +125,7 @@
     </div>
   </header>
 
-  <!-- ================= HERO SECTION ================= -->
+  <!-- ================= HERO ================= -->
   <section class="relative bg-white border-b border-zinc-200 py-16 lg:py-24 bg-grid-pattern overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
       <div class="max-w-3xl">
@@ -102,7 +140,6 @@
           Ferramentas práticas desenvolvidas por e para engenheiros e arquitetos: planilhas paramétricas, blocos inteligentes, memoriais de cálculo e cursos práticos.
         </p>
 
-        <!-- Barra de Busca Rápida -->
         <div class="mt-8 flex flex-col sm:flex-row gap-3 max-w-xl">
           <div class="relative flex-1">
             <i data-lucide="search" class="w-5 h-5 absolute left-3.5 top-3.5 text-zinc-400"></i>
@@ -119,10 +156,8 @@
     </div>
   </section>
 
-  <!-- ================= CATÁLOGO / E-COMMERCE ================= -->
+  <!-- ================= CATÁLOGO ================= -->
   <main id="catalogo" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1 w-full">
-    
-    <!-- Filtros por Categoria -->
     <div class="flex items-center justify-between flex-wrap gap-4 border-b border-zinc-200 pb-4 mb-8">
       <div class="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 w-full sm:w-auto" id="lista-categorias">
         <button onclick="filtrarCategoria('Todas')" class="btn-categoria active px-4 py-2 text-xs font-semibold rounded-full bg-zinc-900 text-white transition-all">Todas</button>
@@ -136,12 +171,8 @@
       </div>
     </div>
 
-    <!-- Grid de Produtos -->
-    <div id="grid-produtos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <!-- Inserido dinamicamente via JS -->
-    </div>
+    <div id="grid-produtos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
 
-    <!-- Feedback vazio -->
     <div id="empty-state" class="hidden text-center py-16">
       <i data-lucide="folder-search" class="w-12 h-12 mx-auto text-zinc-400 stroke-1 mb-3"></i>
       <h3 class="text-base font-semibold text-zinc-800">Nenhum produto encontrado</h3>
@@ -149,40 +180,39 @@
     </div>
   </main>
 
-  <!-- ================= MODAL CHECKOUT PIX PAGBANK (NOVO REQUISITO) ================= -->
+  <!-- ================= MODAL CHECKOUT PIX PAGBANK ================= -->
   <div id="modal-pix" class="fixed inset-0 bg-zinc-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-zinc-200 relative animate-in fade-in zoom-in-95">
       <button onclick="fecharModalPix()" class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-700">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
-      <!-- Passo 1: Cadastro Exigido pelo PagBank -->
       <div id="pix-passo-dados" class="space-y-4">
         <div class="text-center">
           <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold mb-2">
-            <i data-lucide="zap" class="w-3.5 h-3.5"></i> Liberação Imediata
+            <i data-lucide="zap" class="w-3.5 h-3.5 text-emerald-600"></i> PIX PagBank Oficial
           </div>
           <h3 class="font-display font-bold text-lg text-zinc-950" id="pix-modal-titulo">Produto</h3>
-          <p class="text-xs text-zinc-500 mt-1">Dados necessários para emissão do PIX registrado no PagBank.</p>
+          <p class="text-xs text-zinc-500 mt-1">Identificação para registro do QR Code no Banco Central.</p>
         </div>
 
         <div class="bg-zinc-50 p-3 rounded-xl border border-zinc-200 flex justify-between items-center text-xs">
-          <span class="text-zinc-600 font-medium">Total a pagar:</span>
+          <span class="text-zinc-600 font-medium">Total:</span>
           <span class="font-display font-bold text-zinc-950 text-base" id="pix-modal-preco">R$ 0,00</span>
         </div>
 
         <form onsubmit="solicitarPixPagBank(event)" class="space-y-3 text-xs">
           <div>
-            <label class="block font-medium text-zinc-700 mb-1">Nome Completo</label>
-            <input required type="text" id="pix-cliente-nome" placeholder="Seu nome" class="w-full border border-zinc-300 rounded-lg p-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900" />
+            <label class="block font-medium text-zinc-700 mb-1">Nome Completo (com sobrenome)</label>
+            <input required type="text" id="pix-cliente-nome" placeholder="Ex: Carlos Eduardo Silva" class="w-full border border-zinc-300 rounded-lg p-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900" />
           </div>
           <div>
             <label class="block font-medium text-zinc-700 mb-1">E-mail</label>
             <input required type="email" id="pix-cliente-email" placeholder="seu@email.com" class="w-full border border-zinc-300 rounded-lg p-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900" />
           </div>
           <div>
-            <label class="block font-medium text-zinc-700 mb-1">CPF (apenas números)</label>
-            <input required type="text" id="pix-cliente-cpf" placeholder="00000000000" maxlength="14" class="w-full border border-zinc-300 rounded-lg p-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900" />
+            <label class="block font-medium text-zinc-700 mb-1">CPF (11 números, sem pontos)</label>
+            <input required type="text" id="pix-cliente-cpf" placeholder="00011122233" maxlength="14" class="w-full border border-zinc-300 rounded-lg p-2.5 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900" />
           </div>
           <button type="submit" id="btn-submit-pix" class="w-full bg-zinc-900 hover:bg-brand-500 text-white font-semibold py-3 rounded-xl transition-all flex items-center justify-center gap-2">
             <i data-lucide="qr-code" class="w-4 h-4"></i> Gerar PIX PagBank
@@ -190,57 +220,55 @@
         </form>
       </div>
 
-      <!-- Passo 2: QR Code & Polling do Banco -->
       <div id="pix-passo-qrcode" class="hidden space-y-4 text-center">
         <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold">
-          <i data-lucide="clock" class="w-3.5 h-3.5 animate-spin"></i> Aguardando Pagamento...
+          <i data-lucide="clock" class="w-3.5 h-3.5 animate-spin"></i> Aguardando Pagamento no PagBank...
         </div>
 
-        <div class="p-2 bg-zinc-100 rounded-xl inline-block border border-zinc-200">
-          <img id="pix-img-qr" src="" alt="QR Code PagBank" class="w-44 h-44 mx-auto rounded-lg" />
+        <div class="p-3 bg-zinc-100 rounded-xl inline-block border border-zinc-200">
+          <img id="pix-img-qr" src="" alt="QR Code PagBank" class="w-48 h-48 mx-auto rounded-lg object-contain bg-white p-1" />
         </div>
 
         <div class="text-left space-y-1">
           <label class="text-[11px] font-semibold text-zinc-600">Código PIX Copia e Cola:</label>
           <div class="flex items-center gap-2">
             <input readonly id="pix-copiacola" class="text-xs bg-zinc-100 border border-zinc-300 rounded-lg p-2 w-full font-mono text-zinc-600" />
-            <button onclick="copiarCodigoPix()" class="bg-zinc-900 text-white px-3 py-2 rounded-lg text-xs font-semibold">Copiar</button>
+            <button onclick="copiarCodigoPix()" class="bg-zinc-900 text-white px-3 py-2 rounded-lg text-xs font-semibold hover:bg-brand-500 transition-colors">Copiar</button>
           </div>
         </div>
 
-        <div class="pt-2 border-t flex justify-between items-center text-[10px] text-zinc-400">
-          <span>Ouvindo compensação...</span>
-          <button onclick="simularPagamentoAprovado()" class="text-emerald-600 hover:underline font-bold">[Simular Aprovação]</button>
+        <div class="pt-2 border-t text-[11px] text-zinc-500 flex items-center justify-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>O sistema reconhece o pagamento automaticamente.</span>
         </div>
       </div>
 
-      <!-- Passo 3: Pagamento Confirmado & Download Criptografado Único -->
       <div id="pix-passo-sucesso" class="hidden space-y-4 text-center py-2">
         <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
           <i data-lucide="check" class="w-6 h-6 stroke-[3]"></i>
         </div>
         <div>
           <h3 class="font-display font-bold text-lg text-zinc-950">Pagamento Reconhecido!</h3>
-          <p class="text-xs text-zinc-500 mt-1">Seu link único de acesso seguro foi gerado com sucesso.</p>
+          <p class="text-xs text-zinc-500 mt-1">O arquivo foi liberado para acesso imediato.</p>
         </div>
 
         <div class="bg-zinc-50 border border-zinc-200 p-3 rounded-xl text-left text-[11px] space-y-1">
           <div class="flex justify-between font-bold text-zinc-700">
-            <span>Link Único e Criptografado</span>
+            <span>Link Único & Criptografado</span>
             <span class="text-emerald-600">Válido por 24 horas</span>
           </div>
-          <p class="text-zinc-500 text-[10px]">Acesso exclusivo registrado. Links compartilhados são bloqueados pela chave de integridade.</p>
+          <p class="text-zinc-500 text-[10px]">O arquivo será aberto em uma nova aba, mantendo sua sessão segura.</p>
         </div>
 
         <button onclick="efetuarDownloadCriptografado()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 text-sm shadow">
-          <i data-lucide="download" class="w-4 h-4"></i> Baixar Arquivo Agora
+          <i data-lucide="external-link" class="w-4 h-4"></i> Abrir Arquivo em Nova Aba
         </button>
       </div>
 
     </div>
   </div>
 
-  <!-- ================= SLIDE-OVER CARRINHO ================= -->
+  <!-- ================= CARRINHO ================= -->
   <div id="carrinho-overlay" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden transition-opacity" onclick="toggleCarrinho()"></div>
   <aside id="carrinho-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
     <div class="p-5 border-b border-zinc-200 flex items-center justify-between">
@@ -253,10 +281,8 @@
       </button>
     </div>
 
-    <!-- Itens do Carrinho -->
     <div id="carrinho-itens" class="p-5 flex-1 overflow-y-auto space-y-4 divide-y divide-zinc-100"></div>
 
-    <!-- Footer Carrinho -->
     <div class="p-5 border-t border-zinc-200 bg-zinc-50 space-y-4">
       <div class="flex justify-between items-center text-sm">
         <span class="text-zinc-600">Subtotal:</span>
@@ -271,43 +297,49 @@
     </div>
   </aside>
 
-  <!-- ================= MODAL ADMIN ================= -->
+  <!-- ================= MODAL ADMIN SEGURO ================= -->
   <div id="admin-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-zinc-200 overflow-hidden">
       
-      <!-- Cabeçalho Admin -->
       <div class="p-5 border-b border-zinc-200 flex items-center justify-between bg-zinc-900 text-white">
         <div class="flex items-center gap-2">
-          <i data-lucide="sliders" class="w-5 h-5 text-brand-500"></i>
-          <h2 class="font-display font-bold text-lg">Painel Administrativo | A Engenharia.com</h2>
+          <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i>
+          <h2 class="font-display font-bold text-lg">Painel Administrativo Autenticado</h2>
         </div>
         <button onclick="fecharAdminModal()" class="text-zinc-400 hover:text-white p-1">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <!-- Conteúdo com Autenticação -->
+      <!-- TELA DE AUTENTICAÇÃO VIA NUVEM (SEM SENHA NO CÓDIGO) -->
       <div id="admin-auth" class="p-8 text-center max-w-sm mx-auto my-auto">
-        <i data-lucide="shield-check" class="w-12 h-12 text-zinc-400 mx-auto mb-3"></i>
+        <i data-lucide="key-round" class="w-12 h-12 text-zinc-400 mx-auto mb-3"></i>
         <h3 class="font-bold text-zinc-900 text-lg">Acesso Restrito</h3>
-        <p class="text-xs text-zinc-500 mb-4">Digite o PIN administrativo para gerenciar o catálogo.</p>
-        <input type="password" id="admin-pin" placeholder="Senha padrão: admin123" class="w-full text-center border border-zinc-300 rounded-lg p-2.5 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900" />
-        <button onclick="autenticarAdmin()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-white font-medium py-2 rounded-lg text-sm transition-colors">Acessar Painel</button>
+        <p class="text-xs text-zinc-500 mb-4">Autenticação validada via servidor em nuvem criptografado.</p>
+        
+        <form onsubmit="autenticarAdmin(event)">
+          <input type="password" id="admin-pin" placeholder="Digite a senha de administrador" class="w-full text-center border border-zinc-300 rounded-lg p-2.5 mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900" />
+          <button type="submit" id="btn-login-admin" class="w-full bg-zinc-900 hover:bg-zinc-800 text-white font-medium py-2 rounded-lg text-sm transition-colors flex items-center justify-center gap-1.5">
+            <span>Acessar Painel</span>
+          </button>
+        </form>
       </div>
 
-      <!-- Dashboard Gerenciável -->
       <div id="admin-dashboard" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
         
-        <!-- Configuração da URL do Cloudflare Worker -->
         <div class="bg-zinc-100 p-4 rounded-xl border border-zinc-200 space-y-2 text-xs">
           <span class="font-bold text-zinc-900 flex items-center gap-1.5">
-            <i data-lucide="server" class="w-3.5 h-3.5 text-brand-500"></i> Integração Cloudflare Worker (PagBank)
+            <i data-lucide="server" class="w-3.5 h-3.5 text-brand-500"></i> Conexão Cloudflare Worker (PagBank & Auth)
           </span>
-          <input type="url" id="cfg-worker-url" placeholder="https://aengenharia-pagbank-api.seu-usuario.workers.dev" class="w-full border border-zinc-300 rounded-lg p-2 bg-white" />
-          <p class="text-[11px] text-zinc-500">Cole aqui o link do seu Worker criado na Cloudflare para processar os pagamentos reais.</p>
+          <div class="flex gap-2">
+            <input type="url" id="cfg-worker-url" placeholder="https://aengenharia-pagbank-api.seu-usuario.workers.dev" class="w-full border border-zinc-300 rounded-lg p-2 bg-white" />
+            <button onclick="testarConexaoWorker()" type="button" class="bg-zinc-900 hover:bg-brand-500 text-white font-semibold px-3 py-2 rounded-lg whitespace-nowrap">
+              Testar Conexão
+            </button>
+          </div>
+          <p id="worker-status-msg" class="text-[11px] text-zinc-500">URL do seu Worker responsável pela autenticação e pagamentos reais.</p>
         </div>
 
-        <!-- Formulário Adicionar/Editar Produto -->
         <div class="bg-zinc-50 p-5 rounded-xl border border-zinc-200">
           <h4 id="form-title" class="font-display font-bold text-sm text-zinc-900 mb-4 flex items-center gap-2">
             <i data-lucide="plus-circle" class="w-4 h-4 text-brand-500"></i> Cadastrar Novo Produto
@@ -340,7 +372,6 @@
               <input required type="url" id="prod-imagem" placeholder="https://images.unsplash.com/..." class="w-full border border-zinc-300 rounded-lg p-2 focus:bg-white" />
             </div>
 
-            <!-- CHAVE SELETORA: DOWNLOAD IMEDIATO OU URL EXTERNA -->
             <div class="sm:col-span-2 p-3 bg-white border border-zinc-200 rounded-xl space-y-2">
               <label class="block font-bold text-zinc-900 text-xs">Chave de Entrega / Comportamento:</label>
               <div class="grid grid-cols-2 gap-2">
@@ -354,14 +385,12 @@
                 </label>
               </div>
 
-              <!-- Campo se for Download Imediato -->
               <div id="campo-download" class="mt-2 space-y-1">
                 <label class="block text-[11px] font-medium text-zinc-600">Link Protegido do Arquivo (Google Drive, Cloudflare R2 ou S3):</label>
                 <input type="url" id="prod-arquivo-url" placeholder="https://meu-storage.com/arquivos/vigas.zip" class="w-full border border-zinc-300 rounded-lg p-2 bg-zinc-50" />
                 <p class="text-[10px] text-zinc-400">O cliente só terá acesso a este link após compensação confirmada do PIX.</p>
               </div>
 
-              <!-- Campo se for URL Externa -->
               <div id="campo-externo" class="mt-2 hidden space-y-1">
                 <label class="block text-[11px] font-medium text-zinc-600">URL Externa de Destino (Kiwify, Hotmart, Eduzz, etc):</label>
                 <input type="url" id="prod-url-externa" placeholder="https://pay.kiwify.com.br/..." class="w-full border border-zinc-300 rounded-lg p-2 bg-zinc-50" />
@@ -380,7 +409,6 @@
           </form>
         </div>
 
-        <!-- Tabela de Produtos Cadastrados -->
         <div>
           <div class="flex items-center justify-between mb-3">
             <h4 class="font-display font-bold text-sm text-zinc-900">Catálogo Atual (<span id="admin-total-itens">0</span> itens)</h4>
@@ -422,14 +450,13 @@
 
   <!-- ================= JAVASCRIPT DINÂMICO ================= -->
   <script>
-    // 1. Dados Iniciais
     const PRODUTOS_PADRAO = [
       {
         id: "1",
         titulo: "Planilha Automatizada de Vigas e Pilares (NBR 6118)",
         categoria: "Estruturas & Cálculo",
         preco: 89.90,
-        tipo: "download", // 'download' = PagBank PIX Imediato | 'externo' = Link externo
+        tipo: "download",
         arquivoUrl: "https://raw.githubusercontent.com/example/demo/main/vigas-v1.zip",
         urlExterna: "",
         imagem: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80",
@@ -437,17 +464,6 @@
       },
       {
         id: "2",
-        titulo: "Template BIM Revit Arquitetura & Compatibilização",
-        categoria: "Arquitetura & BIM",
-        preco: 149.90,
-        tipo: "download",
-        arquivoUrl: "https://raw.githubusercontent.com/example/demo/main/revit-template.zip",
-        urlExterna: "",
-        imagem: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
-        descricao: "Paredes compostas, tabelas quantitativas automáticas e pranchas configuradas nos padrões ABNT."
-      },
-      {
-        id: "3",
         titulo: "Curso Master BIM & Compatibilização de Projetos",
         categoria: "Arquitetura & BIM",
         preco: 197.00,
@@ -475,7 +491,6 @@
 
     const formatarPreco = (valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-    // Renderização do Catálogo (mantendo seu layout original)
     function renderizarCatalogo() {
       const grid = document.getElementById('grid-produtos');
       const termoBusca = document.getElementById('buscaInput').value.toLowerCase();
@@ -553,11 +568,55 @@
       renderizarCatalogo();
     }
 
-    function filtrarProdutos() {
-      renderizarCatalogo();
+    function filtrarProdutos() { renderizarCatalogo(); }
+
+    // ================= AUTENTICAÇÃO SEGURA COM O WORKER ================= //
+    async function autenticarAdmin(e) {
+      if (e) e.preventDefault();
+      const pin = document.getElementById('admin-pin').value;
+      if (!pin) return alert("Digite a senha!");
+
+      if (!workerUrl) {
+        alert("A URL do Worker precisa estar configurada no localStorage.");
+        return;
+      }
+
+      const btn = document.getElementById('btn-login-admin');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Validando...`;
+      lucide.createIcons();
+
+      try {
+        const cleanBase = workerUrl.replace(/\/+$/, '');
+        const res = await fetch(`${cleanBase}/api/admin-login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: pin })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.autorizado) {
+          sessionStorage.setItem('aeng_admin_token', data.token);
+          document.getElementById('admin-auth').classList.add('hidden');
+          document.getElementById('admin-dashboard').classList.remove('hidden');
+          document.getElementById('cfg-worker-url').value = workerUrl;
+          carregarTabelaAdmin();
+        } else {
+          alert(data.error || "Senha Incorreta!");
+        }
+      } catch (err) {
+        alert("Falha na comunicação segura com o servidor Cloudflare.");
+      } finally {
+        btn.innerHTML = originalText;
+        lucide.createIcons();
+      }
     }
 
-    // ================= FLUXO PAGBANK PIX ================= //
+    function abrirAdminModal() { document.getElementById('admin-modal').classList.remove('hidden'); }
+    function fecharAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
+
+    // ================= FLUXO PIX ================= //
     function iniciarCheckoutPix(id) {
       produtoSelecionadoPix = produtos.find(p => p.id === id);
       if (!produtoSelecionadoPix) return;
@@ -579,53 +638,52 @@
 
     async function solicitarPixPagBank(e) {
       e.preventDefault();
+
+      if (!workerUrl) {
+        alert("ERRO DE CONFIGURAÇÃO:\n\nA URL do Cloudflare Worker não está configurada no painel Admin.");
+        return;
+      }
+
       const btn = document.getElementById('btn-submit-pix');
-      btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Gerando PIX...`;
+      btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Conectando ao PagBank...`;
       lucide.createIcons();
 
       const cliente = {
-        nome: document.getElementById('pix-cliente-nome').value,
-        email: document.getElementById('pix-cliente-email').value,
-        cpf: document.getElementById('pix-cliente-cpf').value
+        nome: document.getElementById('pix-cliente-nome').value.trim(),
+        email: document.getElementById('pix-cliente-email').value.trim(),
+        cpf: document.getElementById('pix-cliente-cpf').value.trim()
       };
 
       try {
-        let dadosPix;
+        const cleanBase = workerUrl.replace(/\/+$/, '');
+        const res = await fetch(`${cleanBase}/api/criar-pix`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            produtoId: produtoSelecionadoPix.id,
+            titulo: produtoSelecionadoPix.titulo,
+            preco: produtoSelecionadoPix.preco,
+            cliente,
+            arquivoUrl: produtoSelecionadoPix.arquivoUrl
+          })
+        });
 
-        if (workerUrl) {
-          const res = await fetch(`${workerUrl}/api/criar-pix`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              produtoId: produtoSelecionadoPix.id,
-              titulo: produtoSelecionadoPix.titulo,
-              preco: produtoSelecionadoPix.preco,
-              cliente,
-              arquivoUrl: produtoSelecionadoPix.arquivoUrl
-            })
-          });
-          dadosPix = await res.json();
-          if (!res.ok) throw new Error(JSON.stringify(dadosPix));
-        } else {
-          // Fallback / Demonstração se ainda não configurou o Worker
-          dadosPix = {
-            orderId: `PAGBANK_DEMO_${Date.now()}`,
-            copiaECola: `00020126580014BR.GOV.BCB.PIX0136PAGBANKDEMO123520400005303986540${produtoSelecionadoPix.preco.toFixed(2)}5802BR5916A ENGENHARIA COM6009SAO PAULO`,
-            qrCodeImg: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PagBankDemo`
-          };
+        const dadosPix = await res.json();
+
+        if (!res.ok) {
+          throw new Error(dadosPix.error || "Falha ao gerar cobrança no PagBank.");
         }
 
-        document.getElementById('pix-img-qr').src = dadosPix.qrCodeImg || `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(dadosPix.copiaECola)}`;
+        document.getElementById('pix-img-qr').src = dadosPix.qrCodeImg;
         document.getElementById('pix-copiacola').value = dadosPix.copiaECola;
 
         document.getElementById('pix-passo-dados').classList.add('hidden');
         document.getElementById('pix-passo-qrcode').classList.remove('hidden');
 
-        // Inicia escuta automática do PagBank
         iniciarEscutaCompensacao(dadosPix.orderId, produtoSelecionadoPix.arquivoUrl);
 
       } catch (err) {
-        alert("Erro ao conectar com PagBank: " + err.message);
+        alert("Aviso PagBank:\n" + err.message);
       } finally {
         btn.innerHTML = `<i data-lucide="qr-code" class="w-4 h-4"></i> Gerar PIX PagBank`;
         lucide.createIcons();
@@ -634,11 +692,11 @@
 
     function iniciarEscutaCompensacao(orderId, arquivoUrl) {
       if (pollingPixTimer) clearInterval(pollingPixTimer);
-      pollingPixTimer = setInterval(async () => {
-        if (!workerUrl) return;
 
+      pollingPixTimer = setInterval(async () => {
         try {
-          const res = await fetch(`${workerUrl}/api/verificar-pix?orderId=${orderId}&arquivoUrl=${encodeURIComponent(arquivoUrl)}`);
+          const cleanBase = workerUrl.replace(/\/+$/, '');
+          const res = await fetch(`${cleanBase}/api/verificar-pix?orderId=${orderId}&arquivoUrl=${encodeURIComponent(arquivoUrl)}`);
           const data = await res.json();
 
           if (data.status === "PAID") {
@@ -646,16 +704,9 @@
             liberarDownloadSucesso(data.downloadToken);
           }
         } catch (e) {
-          console.error("Polling PagBank:", e);
+          console.error("Aguardando confirmação do PagBank...", e);
         }
       }, 3000);
-    }
-
-    function simularPagamentoAprovado() {
-      if (pollingPixTimer) clearInterval(pollingPixTimer);
-      // Gera token temporário assinado simulado
-      const tokenDemo = btoa(JSON.stringify({ exp: Date.now() + 86400000, urlOriginal: produtoSelecionadoPix.arquivoUrl }));
-      liberarDownloadSucesso(tokenDemo);
     }
 
     function liberarDownloadSucesso(token) {
@@ -669,31 +720,58 @@
       if (!tokenCriptografadoAtivo) return alert("Acesso inválido.");
       try {
         const dados = JSON.parse(atob(tokenCriptografadoAtivo));
-        if (Date.now() > dados.exp) return alert("Link de download expirado.");
+        if (Date.now() > dados.exp) return alert("Este link de acesso expirou.");
 
-        const a = document.createElement('a');
-        a.href = dados.urlOriginal;
-        a.download = `${produtoSelecionadoPix.titulo.replace(/\s+/g, '_')}.zip`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+        const novaAba = window.open(dados.urlOriginal, '_blank');
+        if (!novaAba) {
+          const link = document.createElement('a');
+          link.href = dados.urlOriginal;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        }
       } catch (e) {
-        alert("Falha na validação do token criptográfico.");
+        alert("Falha na integridade do arquivo.");
       }
     }
 
     function copiarCodigoPix() {
       const el = document.getElementById('pix-copiacola');
       navigator.clipboard.writeText(el.value);
-      alert("Código PIX copiado com sucesso!");
+      alert("Código PIX copiado!");
     }
 
-    // ================= CARRINHO ================= //
+    async function testarConexaoWorker() {
+      const url = document.getElementById('cfg-worker-url').value.trim();
+      const msg = document.getElementById('worker-status-msg');
+      if (!url) return alert("Digite a URL do Worker antes de testar.");
+
+      msg.innerText = "Testando comunicação...";
+      msg.className = "text-[11px] text-amber-600 font-medium";
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (res.ok && data.status === "ONLINE") {
+          msg.innerText = "Conexão com o Worker estabelecida com sucesso!";
+          msg.className = "text-[11px] text-emerald-600 font-bold";
+        } else {
+          msg.innerText = "O Worker respondeu mas o formato não bateu.";
+          msg.className = "text-[11px] text-rose-600 font-medium";
+        }
+      } catch (e) {
+        msg.innerText = "Falha ao conectar. Verifique a URL ou as permissões de CORS.";
+        msg.className = "text-[11px] text-rose-600 font-medium";
+      }
+    }
+
+    // ================= CARRINHO & PRODUTOS ================= //
     function toggleCarrinho() {
       const drawer = document.getElementById('carrinho-drawer');
       const overlay = document.getElementById('carrinho-overlay');
       const estaFechado = drawer.classList.contains('translate-x-full');
-      
       if (estaFechado) {
         drawer.classList.remove('translate-x-full');
         overlay.classList.remove('hidden');
@@ -706,12 +784,8 @@
     function adicionarAoCarrinho(id) {
       const produto = produtos.find(p => p.id === id);
       const itemExistente = carrinho.find(item => item.id === id);
-
-      if (itemExistente) {
-        itemExistente.qtd += 1;
-      } else {
-        carrinho.push({ ...produto, qtd: 1 });
-      }
+      if (itemExistente) itemExistente.qtd += 1;
+      else carrinho.push({ ...produto, qtd: 1 });
       sincronizarStorage();
       atualizarCarrinhoUI();
       toggleCarrinho();
@@ -727,8 +801,8 @@
       const container = document.getElementById('carrinho-itens');
       const contador = document.getElementById('carrinho-contador');
       const subtotalEl = document.getElementById('carrinho-subtotal');
-      
       container.innerHTML = '';
+
       const totalItens = carrinho.reduce((acc, curr) => acc + curr.qtd, 0);
       const subtotal = carrinho.reduce((acc, curr) => acc + (curr.preco * curr.qtd), 0);
 
@@ -769,21 +843,6 @@
       const subtotal = carrinho.reduce((acc, curr) => acc + (curr.preco * curr.qtd), 0);
       msg += `\n*Total:* ${formatarPreco(subtotal)}\n`;
       window.open(`https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
-    }
-
-    // ================= PAINEL ADMINISTRATIVO ================= //
-    function abrirAdminModal() { document.getElementById('admin-modal').classList.remove('hidden'); }
-    function fecharAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
-
-    function autenticarAdmin() {
-      if (document.getElementById('admin-pin').value === "admin123") {
-        document.getElementById('admin-auth').classList.add('hidden');
-        document.getElementById('admin-dashboard').classList.remove('hidden');
-        document.getElementById('cfg-worker-url').value = workerUrl;
-        carregarTabelaAdmin();
-      } else {
-        alert("PIN Incorreto!");
-      }
     }
 
     function alternarCamposAdmin() {
@@ -827,8 +886,6 @@
 
     function salvarProduto(e) {
       e.preventDefault();
-      
-      // Salva URL do Worker se configurada
       workerUrl = document.getElementById('cfg-worker-url').value.trim();
       localStorage.setItem('aeng_worker_url', workerUrl);
 
@@ -847,11 +904,8 @@
         descricao: document.getElementById('prod-descricao').value,
       };
 
-      if (id) {
-        produtos = produtos.map(p => p.id === id ? novoProduto : p);
-      } else {
-        produtos.unshift(novoProduto);
-      }
+      if (id) produtos = produtos.map(p => p.id === id ? novoProduto : p);
+      else produtos.unshift(novoProduto);
 
       sincronizarStorage();
       renderizarCatalogo();
@@ -880,7 +934,6 @@
         document.getElementById('prod-arquivo-url').value = prod.arquivoUrl || '';
       }
       alternarCamposAdmin();
-
       document.getElementById('form-title').innerText = "Editar Produto";
     }
 
