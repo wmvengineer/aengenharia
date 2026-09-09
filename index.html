@@ -490,7 +490,10 @@
 
     let produtos = JSON.parse(localStorage.getItem('aengenharia_produtos')) || PRODUTOS_PADRAO;
     let carrinho = JSON.parse(localStorage.getItem('aengenharia_carrinho')) || [];
-    let workerUrl = localStorage.getItem('aeng_worker_url') || "";
+    
+    // URL padrão do Worker para funcionar em celulares e computadores sem travar:
+    const WORKER_PADRAO = "COLE_AQUI_A_URL_DO_SEU_WORKER"; 
+    let workerUrl = localStorage.getItem('aeng_worker_url') || WORKER_PADRAO;
     let categoriaAtiva = 'Todas';
 
     let produtoSelecionadoPix = null;
@@ -590,10 +593,11 @@
       const pin = document.getElementById('admin-pin').value;
       if (!pin) return alert("Digite a senha!");
 
-      if (!workerUrl) {
-        alert("A URL do Worker precisa estar configurada no localStorage.");
-        return;
-      }
+      if (!workerUrl || workerUrl.includes("COLE_AQUI")) {
+        const urlDigitada = prompt("Informe a URL do seu Cloudflare Worker para este dispositivo:", "https://");
+        if (!urlDigitada) return;
+        workerUrl = urlDigitada.trim();
+        localStorage.setItem('aeng_worker_url', workerUrl);
 
       const btn = document.getElementById('btn-login-admin');
       const originalText = btn.innerHTML;
