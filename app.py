@@ -10,8 +10,19 @@ import requests
 
 app = Flask(__name__)
 
-# Configurações do Banco de Dados SQLite
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///aengenharia.db')
+# ==============================================================================
+# CONFIGURAÇÃO DO BANCO DE DADOS NA NUVEM (SUPABASE POSTGRESQL)
+# ==============================================================================
+# Cole entre as aspas abaixo a string de conexão (URI) que você copiou do Supabase com a sua senha:
+SUPABASE_DATABASE_URI = "postgresql://postgres.SEU_PROJETO:SUA_SENHA@aws-0-sa-east-1.pooler.supabase.com:6543/postgres"
+
+database_url = os.getenv('DATABASE_URL', SUPABASE_DATABASE_URI)
+
+# Ajuste automático caso a URL comece com "postgres://" para funcionar no SQLAlchemy
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'chave_secreta_super_segura_2026')
 
@@ -22,7 +33,9 @@ ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'EngenhariaMaster@2026')
 
 db = SQLAlchemy(app)
 
+# ==============================================================================
 # MODELO DO BANCO DE DADOS
+# ==============================================================================
 class Produto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     titulo = db.Column(db.String(150), nullable=False)
@@ -52,7 +65,9 @@ class Produto(db.Model):
             data['arquivo_url'] = self.arquivo_url
         return data
 
-# CRIAÇÃO DAS TABELAS E PRODUTOS INICIAIS
+# ==============================================================================
+# CRIAÇÃO AUTOMÁTICA DAS TABELAS NO SUPABASE E ITENS INICIAIS
+# ==============================================================================
 with app.app_context():
     db.create_all()
     if Produto.query.count() == 0:
@@ -79,7 +94,9 @@ with app.app_context():
         db.session.add_all([p1, p2])
         db.session.commit()
 
+# ==============================================================================
 # ROTAS PÚBLICAS
+# ==============================================================================
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -90,7 +107,9 @@ def listar_produtos():
     prods = Produto.query.filter_by(ativo=True).all()
     return jsonify([p.to_dict() for p in prods])
 
+# ==============================================================================
 # ROTAS ADMINISTRATIVAS
+# ==============================================================================
 @app.route('/api/admin/login', methods=['POST'])
 def admin_login():
     data = request.json or {}
@@ -142,7 +161,9 @@ def admin_deletar_produto(prod_id):
         return jsonify({'ok': True})
     return jsonify({'error': 'Item não encontrado'}), 404
 
+# ==============================================================================
 # INTEGRAÇÃO PAGBANK OFICIAL EM PYTHON
+# ==============================================================================
 @app.route('/api/pagbank/criar-pix', methods=['POST'])
 def criar_pix():
     try:
