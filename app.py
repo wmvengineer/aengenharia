@@ -14,7 +14,7 @@ app = Flask(__name__)
 # CONFIGURAÇÃO DO BANCO DE DADOS NA NUVEM (SUPABASE POSTGRESQL)
 # ==============================================================================
 # Cole entre as aspas abaixo a string de conexão (URI) que você copiou do Supabase com a sua senha:
-SUPABASE_DATABASE_URI = "postgresql://postgres:WMv352005@#$@db.hyexdpmcqpxieheetatn.supabase.co:5432/postgres"
+SUPABASE_DATABASE_URI = "postgresql://postgres.hyexdpmcqpxieheetatn:EngenhariaSupabase2026@aws-0-sa-east-1.pooler.supabase.com:6543/postgres"
 
 database_url = os.getenv('DATABASE_URL', SUPABASE_DATABASE_URI)
 
